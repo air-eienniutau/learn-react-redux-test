@@ -1,0 +1,12 @@
+*.DS_Store
+*.sublime-*
+.env
+.idea/*
+.npmrc
+.tmp
+node_modules
+npm-debug.log
+.bat
+bower_components
+src/.tags
+build
