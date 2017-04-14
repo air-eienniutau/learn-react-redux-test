@@ -1,11 +1,12 @@
 var CommonsChunkPlugin = require("webpack/lib/optimize/CommonsChunkPlugin");
 module.exports = {
   entry: {
-    index: './main.js',
+    index: './js/main.js',
     common: ['react','react-dom','redux','react-redux']
   },
   output: {
-    filename: '[name].js'
+    path: './build',
+    filename: 'index.js'
   },
   module: {
     loaders: [
