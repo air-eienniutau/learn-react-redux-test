@@ -1,3 +1,4 @@
+var path = require("path");
 var CommonsChunkPlugin = require("webpack/lib/optimize/CommonsChunkPlugin");
 module.exports = {
   entry: {
@@ -5,6 +6,7 @@ module.exports = {
     common: ['react','react-dom','redux','react-redux']
   },
   output: {
+    path: path.resolve(__dirname, './src'),
     filename: '[name].js'
   },
   module: {
