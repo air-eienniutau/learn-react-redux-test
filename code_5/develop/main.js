@@ -1,6 +1,9 @@
 /**
  * https://discountry.github.io/react/tutorial/tutorial.html#展示每步历史纪录链接
  */
+import React from 'react';
+import ReactDOM from 'react-dom';
+
 function Square(props){
   return (
     <button className="square" onClick={() => props.onClick()}>
@@ -30,12 +33,6 @@ function calculateWinner(squares) {
 }
 
 class Board extends React.Component {
-  handleClear(){
-    this.setState({
-      square: Array(9).fill(null),
-      xIsNext: true
-    })
-  }
   renderSquare(i) {
     return (
       <Square
@@ -44,7 +41,6 @@ class Board extends React.Component {
       />
     );
   }
-
   render() {
     return (
       <div>
@@ -73,38 +69,64 @@ class Game extends React.Component {
     super();
     this.state = {
       history: [
-        {square:Array(9).fill(null)}
+        {square: new Array(9).fill(null)}
       ],
+      curStep: 0,
       xIsNext: true
     }
   }
+  jumpTo(step){
+    this.setState((prevState) => {
+      return {
+        history: prevState.history,
+        curStep: step,
+        xIsNext: step%2 == 0
+      }
+    })
+  }
+  handleClear(){
+    this.setState({
+      history: [
+        {square: new Array(9).fill(null)}
+      ],
+      curStep: 0,
+      xIsNext: true
+    })
+  }
   handleClick(i){
     this.setState((prevState) => {
-      let history = prevState.history;
+      let history = prevState.history.slice(0,prevState.curStep+1);
       let square = history[history.length - 1].square.slice();
       square[i] = prevState.xIsNext ? 'X' : 'O';
       return {
         history: history.concat([{square:square}]),
+        curStep: prevState.curStep+1,
         xIsNext: !prevState.xIsNext
       }
     })
   }
   render() {
     const history = this.state.history;
-    const curSquare = history[history.length - 1];
+    const curSquare = history[this.state.curStep].square;
     let winner;
     const status = (winner = calculateWinner(curSquare)) == null
       ? 'Next player is ' + (this.state.xIsNext ? 'X' : 'O')
       : 'Winner is ' + winner;
-
+    const moves = history.map((move,step) => {
+      return(
+        <li key={ step }>
+          <a onClick={() => this.jumpTo(step)} style={{"cursor":"pointer"}}>{'#' + step}</a>
+        </li>
+      )
+    });
     return (
       <div className="game">
         <div className="game-board">
           <Board square={curSquare} onClick={(i)=>this.handleClick(i)} />
         </div>
         <div className="game-info">
-          <div>{ status }</div>
-          <ol>{/* TODO */}</ol>
+          <div onClick={this.handleClear.bind(this)}>{ status }</div>
+          <ol>{moves}</ol>
         </div>
       </div>
     );
@@ -117,3 +139,4 @@ ReactDOM.render(
   <Game />,
   document.getElementById('root')
 );
+
