@@ -1,12 +1,4 @@
-
-const initState = {
-  num_1: "",
-  num_2: "0",
-  curOpera: "",
-  saveLogic: null,
-  edit: false,
-  error: 0
-};
+import initState from './initState';
 
 const calReducer = (state, action) => {
   if(!state) state = initState;

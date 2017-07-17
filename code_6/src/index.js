@@ -1,6 +1,6 @@
 webpackJsonp([1],{
 
-/***/ 224:
+/***/ 225:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16,9 +16,9 @@ var _redux = __webpack_require__(26);
 
 var _reactRedux = __webpack_require__(35);
 
-var _logicList = __webpack_require__(98);
+var _logicList = __webpack_require__(99);
 
-var _calReducer = __webpack_require__(97);
+var _calReducer = __webpack_require__(98);
 
 var _calReducer2 = _interopRequireDefault(_calReducer);
 
@@ -77,10 +77,12 @@ var FuncBtn = (0, _reactRedux.connect)(function (state) {
 }, function (dispatch, ownProps) {
   return {
     funcClick: function funcClick() {
-      dispatch({
-        type: "FUNCTION_CLICK",
-        logic: ownProps.logic
-      });
+      if (!!ownProps.logic) {
+        dispatch({
+          type: "FUNCTION_CLICK",
+          logic: ownProps.logic
+        });
+      }
     }
   };
 })(FuncBtnView);
@@ -123,8 +125,16 @@ var CalDisplay = (0, _reactRedux.connect)(function (state) {
 var CalculaterView = function CalculaterView(props) {
   return _react2.default.createElement(
     'div',
-    { className: 'cal-wrap' },
+    { className: 'cal-wrap', tabIndex: '1', onKeyDown: props.onKeyDown },
     _react2.default.createElement(CalDisplay, null),
+    _react2.default.createElement(
+      'div',
+      { className: 'cal-Box' },
+      _react2.default.createElement(FuncBtn, { funcName: '' }),
+      _react2.default.createElement(FuncBtn, { funcName: '' }),
+      _react2.default.createElement(FuncBtn, { funcName: 'C', logic: _logicList.FuncList.reset }),
+      _react2.default.createElement(FuncBtn, { funcName: 'EC', logic: _logicList.FuncList.clear })
+    ),
     _react2.default.createElement(
       'div',
       { className: 'cal-Box' },
@@ -166,7 +176,48 @@ var CalculaterView = function CalculaterView(props) {
 var Calculater = (0, _reactRedux.connect)(function (state) {
   return {};
 }, function (dispatch) {
-  return {};
+  return {
+    onKeyDown: function onKeyDown(e) {
+      var dispatchOpts = null;
+      switch (e.key) {
+        case "0":
+        case "1":
+        case "2":
+        case "3":
+        case "4":
+        case "5":
+        case "6":
+        case "7":
+        case "8":
+        case "9":
+          dispatchOpts = { type: "DIGIT_CLICK", digit: Number(e.key) };break;
+        case "+":
+          dispatchOpts = { type: "OPERATER_CLICK", logic: _logicList.OperateList.addition, operater: e.key };break;
+        case "-":
+          dispatchOpts = { type: "OPERATER_CLICK", logic: _logicList.OperateList.subtraction, operater: e.key };break;
+        case "*":
+          dispatchOpts = { type: "OPERATER_CLICK", logic: _logicList.OperateList.multiplication, operater: e.key };break;
+        case "/":
+          dispatchOpts = { type: "OPERATER_CLICK", logic: _logicList.OperateList.division, operater: e.key };break;
+        case "%":
+          dispatchOpts = { type: "OPERATER_CLICK", logic: _logicList.OperateList.residue, operater: e.key };break;
+        case "^":
+          dispatchOpts = { type: "OPERATER_CLICK", logic: _logicList.OperateList.pow, operater: e.key };break;
+        case "Enter":
+          dispatchOpts = { type: "OPERATER_CLICK", logic: null, operater: "=" };break;
+        case ".":
+          dispatchOpts = { type: "FUNCTION_CLICK", logic: _logicList.FuncList.point };break;
+        case "Backspace":
+          dispatchOpts = { type: "FUNCTION_CLICK", logic: _logicList.FuncList.backspace };break;
+        case "c":
+        case "C":
+          dispatchOpts = { type: "FUNCTION_CLICK", logic: _logicList.FuncList.reset };break;
+        default:
+          break;
+      }
+      dispatchOpts && dispatch(dispatchOpts);
+    }
+  };
 })(CalculaterView);
 
 var store = (0, _redux.createStore)(_calReducer2.default);
@@ -188,9 +239,6 @@ var store = (0, _redux.createStore)(_calReducer2.default);
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
 var initState = {
   num_1: "",
   num_2: "0",
@@ -200,8 +248,30 @@ var initState = {
   error: 0
 };
 
+exports.default = initState;
+
+/***/ }),
+
+/***/ 98:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _initState = __webpack_require__(97);
+
+var _initState2 = _interopRequireDefault(_initState);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 var calReducer = function calReducer(state, action) {
-  if (!state) state = initState;
+  if (!state) state = _initState2.default;
   switch (action.type) {
     case "DIGIT_CLICK":
       if (state.edit === false || state.num_2 === "0") return _extends({}, state, { num_2: "" + action.digit, edit: true });
@@ -252,7 +322,7 @@ exports.default = calReducer;
 
 /***/ }),
 
-/***/ 98:
+/***/ 99:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -261,8 +331,15 @@ exports.default = calReducer;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.FuncList = exports.OperateList = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _initState = __webpack_require__(97);
+
+var _initState2 = _interopRequireDefault(_initState);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var OperateList = {
   addition: function addition(state) {
@@ -284,14 +361,14 @@ var OperateList = {
     };
   },
   division: function division(state) {
-    if (Number(state.num_2) === "0") return { value: 0, error: 1 };
+    if (Number(state.num_2) === 0) return { value: 0, error: 1 };
     return {
       value: Number(state.num_1) / Number(state.num_2),
       error: 0
     };
   },
   residue: function residue(state) {
-    if (Number(state.num_2) === "0") return { value: 0, error: 1 };
+    if (Number(state.num_2) === 0) return { value: 0, error: 1 };
     return {
       value: Number(state.num_1) % Number(state.num_2),
       error: 0
@@ -332,9 +409,28 @@ var FuncList = {
       num_2: nextNum
     });
   },
-
-  'reset': '',
-  'clear': ''
+  clear: function clear(state) {
+    if (state.edit == false && state.num_2 !== "0") {
+      return _extends({}, state, {
+        num_2: "0"
+      });
+    }
+    if (state.edit == false) {
+      return _extends({}, state, {
+        num_1: "",
+        num_2: state.num_1,
+        curOpera: "",
+        saveLogic: null,
+        edit: true
+      });
+    }
+    return _extends({}, state, {
+      num_2: "0"
+    });
+  },
+  reset: function reset() {
+    return _initState2.default;
+  }
 };
 
 exports.OperateList = OperateList;
@@ -342,4 +438,4 @@ exports.FuncList = FuncList;
 
 /***/ })
 
-},[224]);
+},[225]);

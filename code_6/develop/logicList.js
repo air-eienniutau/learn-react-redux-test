@@ -1,3 +1,5 @@
+import initState from './initState';
+
 let OperateList = {
   addition (state) {
     return {
@@ -18,14 +20,14 @@ let OperateList = {
     }
   },
   division (state) {
-    if (Number(state.num_2) === "0") return {value: 0, error: 1};
+    if (Number(state.num_2) === 0) return {value: 0, error: 1};
     return {
       value: Number(state.num_1) / Number(state.num_2),
       error: 0
     }
   },
   residue(state) {
-    if (Number(state.num_2) === "0") return {value: 0, error: 1};
+    if (Number(state.num_2) === 0) return {value: 0, error: 1};
     return {
       value: Number(state.num_1) % Number(state.num_2),
       error: 0
@@ -70,8 +72,32 @@ let FuncList = {
       num_2: nextNum
     }
   },
-  'reset':'',
-  'clear':''
+  clear(state){
+    if(state.edit == false && state.num_2 !=="0") {
+      return {
+        ...state,
+        num_2: "0"
+      }
+    }
+    if(state.edit == false){
+      return {
+        ...state,
+        num_1: "",
+        num_2: state.num_1,
+        curOpera: "",
+        saveLogic: null,
+        edit: true,
+      }
+    }
+    return {
+      ...state,
+      num_2: "0",
+    }
+  },
+  reset(){
+    return initState;
+  }
+
 };
 
 
